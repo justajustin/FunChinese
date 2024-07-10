@@ -1,0 +1,35 @@
+body {
+    font-family: Arial, sans-serif;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    line-height: 1.6;
+}
+.joke-container {
+    position: relative;
+    overflow: hidden;
+    height: 600px; /* Adjust based on your content */
+}
+.joke {
+    position: absolute;
+    width: 100%;
+    border: 1px solid #ddd;
+    padding: 20px;
+    box-sizing: border-box;
+    transition: transform 0.5s ease;
+}
+img {
+    max-width: 100%;
+    height: auto;
+}
+.keywords {
+    background-color: #f0f0f0;
+    padding: 10px;
+}
+button {
+    display: block;
+    margin: 20px auto;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+}
