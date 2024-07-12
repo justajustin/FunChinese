@@ -7,8 +7,23 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="joke-container" id="jokeContainer"></div>
-    <button onclick="showNextJoke()">Next Joke</button>
+    <div class="container">
+        <div id="jokeCard" class="joke-card">
+            <div class="joke-content">
+                <h2>今日笑话 / Today's Joke</h2>
+                <img id="jokeImage" alt="Chinese joke image">
+                <div class="text-content">
+                    <h3>Chinese Text:</h3>
+                    <p id="chineseText"></p>
+                    <h3>English Translation:</h3>
+                    <p id="englishText"></p>
+                    <h3>Key Words:</h3>
+                    <div id="keywords" class="keywords"></div>
+                </div>
+            </div>
+        </div>
+        <button id="nextJokeBtn" class="next-button">Next Joke</button>
+    </div>
     <script src="script.js"></script>
 </body>
 </html>
