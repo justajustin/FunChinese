@@ -1,16 +1,5 @@
-const jokes = [
-    {
-        image: "images/joke_image1.jpg",
-        chineseText: "［在这里插入中文笑话1］",
-        englishTranslation: "[Insert English translation 1 here]",
-        keywords: [
-            { chinese: "词1", pinyin: "cí1", english: "word1" },
-            { chinese: "词2", pinyin: "cí2", english: "word2" },
-            { chinese: "词3", pinyin: "cí3", english: "word3" }
-        ]
-    },
-    // Add more jokes here
-];
+let jokes = [];
+let currentJokeIndex = -1;
 
 const jokeImage = document.getElementById('jokeImage');
 const chineseText = document.getElementById('chineseText');
@@ -19,7 +8,17 @@ const keywords = document.getElementById('keywords');
 const nextJokeBtn = document.getElementById('nextJokeBtn');
 const jokeContent = document.querySelector('.joke-content');
 
-let currentJokeIndex = -1;
+async function fetchJokes() {
+    try {
+        const response = await fetch('jokes_db.json');
+        const data = await response.json();
+        jokes = data.jokes;
+        showNextJoke(); // Show the first joke after fetching
+    } catch (error) {
+        console.error('Error fetching jokes:', error);
+        // You might want to display an error message to the user here
+    }
+}
 
 function getRandomJoke() {
     let newIndex;
@@ -31,7 +30,7 @@ function getRandomJoke() {
 }
 
 function displayJoke(joke) {
-    jokeImage.src = joke.image;
+    jokeImage.src = joke.imagePath;
     jokeImage.alt = "Chinese joke image";
     chineseText.textContent = joke.chineseText;
     englishText.textContent = joke.englishTranslation;
@@ -42,6 +41,11 @@ function displayJoke(joke) {
 }
 
 function showNextJoke() {
+    if (jokes.length === 0) {
+        console.error('No jokes available');
+        return;
+    }
+
     jokeContent.classList.add('fade');
     
     setTimeout(() => {
@@ -53,5 +57,5 @@ function showNextJoke() {
 
 nextJokeBtn.addEventListener('click', showNextJoke);
 
-// Show the first joke on page load
-showNextJoke();
+// Fetch jokes when the page loads
+fetchJokes();

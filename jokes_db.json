@@ -1,0 +1,26 @@
+{
+    "jokes": [
+      {
+        "id": 1,
+        "imagePath": "images/joke_image1.jpg",
+        "chineseText": "［在这里插入中文笑话1］",
+        "englishTranslation": "[Insert English translation 1 here]",
+        "keywords": [
+          { "chinese": "词1", "pinyin": "cí1", "english": "word1" },
+          { "chinese": "词2", "pinyin": "cí2", "english": "word2" },
+          { "chinese": "词3", "pinyin": "cí3", "english": "word3" }
+        ]
+      },
+      {
+        "id": 2,
+        "imagePath": "images/joke_image2.jpg",
+        "chineseText": "［在这里插入中文笑话2］",
+        "englishTranslation": "[Insert English translation 2 here]",
+        "keywords": [
+          { "chinese": "词4", "pinyin": "cí4", "english": "word4" },
+          { "chinese": "词5", "pinyin": "cí5", "english": "word5" },
+          { "chinese": "词6", "pinyin": "cí6", "english": "word6" }
+        ]
+      }
+    ]
+  }
