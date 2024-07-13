@@ -1,19 +1,27 @@
+:root {
+    --primary-color: #4CAF50;
+    --background-color: #f0f0f0;
+    --card-background: white;
+    --text-color: #333;
+}
+
 body {
-    font-family: Arial, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     margin: 0;
     padding: 0;
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    background-color: #f0f0f0;
+    background-color: var(--background-color);
+    color: var(--text-color);
 }
 
 .container {
-    max-width: 800px;
+    max-width: 600px;
     width: 90%;
-    background-color: white;
-    border-radius: 10px;
+    background-color: var(--card-background);
+    border-radius: 12px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     overflow: hidden;
 }
@@ -31,14 +39,10 @@ body {
     opacity: 0;
 }
 
-h2, h3 {
-    color: #333;
-}
-
 img {
     max-width: 100%;
     height: auto;
-    border-radius: 5px;
+    border-radius: 8px;
     margin-bottom: 15px;
 }
 
@@ -46,11 +50,21 @@ img {
     line-height: 1.6;
 }
 
+.chinese-text {
+    font-size: 1.2em;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.english-text {
+    font-style: italic;
+    margin-bottom: 15px;
+}
+
 .keywords {
     background-color: #f9f9f9;
     padding: 10px;
     border-radius: 5px;
-    margin-top: 15px;
 }
 
 .keywords p {
@@ -58,10 +72,12 @@ img {
 }
 
 .next-button {
-    display: block;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     width: 100%;
     padding: 15px;
-    background-color: #4CAF50;
+    background-color: var(--primary-color);
     color: white;
     border: none;
     font-size: 18px;
@@ -71,6 +87,11 @@ img {
 
 .next-button:hover {
     background-color: #45a049;
+}
+
+.next-button svg {
+    fill: currentColor;
+    margin-left: 8px;
 }
 
 @media (max-width: 600px) {

@@ -1,5 +1,6 @@
 let jokes = [];
 let currentJokeIndex = -1;
+let nextJoke = null;
 
 const jokeImage = document.getElementById('jokeImage');
 const chineseText = document.getElementById('chineseText');
@@ -13,10 +14,12 @@ async function fetchJokes() {
         const response = await fetch('jokes_db.json');
         const data = await response.json();
         jokes = data.jokes;
-        showNextJoke(); // Show the first joke after fetching
+        await showNextJoke();
+        preloadNextJoke();
     } catch (error) {
         console.error('Error fetching jokes:', error);
-        // You might want to display an error message to the user here
+        // Display a user-friendly error message
+        jokeContent.innerHTML = '<p>抱歉，加载笑话时出现问题。请稍后再试。</p>';
     }
 }
 
@@ -31,7 +34,7 @@ function getRandomJoke() {
 
 function displayJoke(joke) {
     jokeImage.src = joke.imagePath;
-    jokeImage.alt = "Chinese joke image";
+    jokeImage.alt = "中文笑话图片";
     chineseText.textContent = joke.chineseText;
     englishText.textContent = joke.englishTranslation;
     
@@ -40,7 +43,7 @@ function displayJoke(joke) {
     ).join('');
 }
 
-function showNextJoke() {
+async function showNextJoke() {
     if (jokes.length === 0) {
         console.error('No jokes available');
         return;
@@ -48,14 +51,42 @@ function showNextJoke() {
 
     jokeContent.classList.add('fade');
     
-    setTimeout(() => {
+    await new Promise(resolve => setTimeout(resolve, 300));
+
+    if (nextJoke) {
+        displayJoke(nextJoke);
+        nextJoke = null;
+    } else {
         const joke = getRandomJoke();
         displayJoke(joke);
-        jokeContent.classList.remove('fade');
-    }, 300);
+    }
+
+    jokeContent.classList.remove('fade');
 }
 
-nextJokeBtn.addEventListener('click', showNextJoke);
+function preloadNextJoke() {
+    nextJoke = getRandomJoke();
+    if (nextJoke.imagePath) {
+        const img = new Image();
+        img.src = nextJoke.imagePath;
+    }
+}
+
+nextJokeBtn.addEventListener('click', async () => {
+    await showNextJoke();
+    preloadNextJoke();
+});
 
 // Fetch jokes when the page loads
 fetchJokes();
+
+// Service Worker for offline functionality
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js').then(registration => {
+            console.log('ServiceWorker registration successful');
+        }, err => {
+            console.log('ServiceWorker registration failed: ', err);
+        });
+    });
+}

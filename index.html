@@ -1,29 +1,30 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chinese Joke Learning</title>
+    <title>中文笑话学习</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="manifest" href="manifest.json">
 </head>
 <body>
     <div class="container">
         <div id="jokeCard" class="joke-card">
             <div class="joke-content">
-                <h2>今日笑话 / Today's Joke</h2>
-                <img id="jokeImage" alt="Chinese joke image">
+                <img id="jokeImage" alt="中文笑话图片">
                 <div class="text-content">
-                    <h3>Chinese Text:</h3>
-                    <p id="chineseText"></p>
-                    <h3>English Translation:</h3>
-                    <p id="englishText"></p>
-                    <h3>Key Words:</h3>
+                    <p id="chineseText" class="chinese-text"></p>
+                    <p id="englishText" class="english-text"></p>
                     <div id="keywords" class="keywords"></div>
                 </div>
             </div>
         </div>
-        <button id="nextJokeBtn" class="next-button">Next Joke</button>
+        <button id="nextJokeBtn" class="next-button" aria-label="下一个笑话">
+            <svg viewBox="0 0 24 24" width="24" height="24">
+                <path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/>
+            </svg>
+        </button>
     </div>
-    <script src="script.js"></script>
+    <script src="script.js" type="module"></script>
 </body>
 </html>
