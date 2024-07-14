@@ -1,6 +1,6 @@
 let jokes = [];
 let currentJokeIndex = -1;
-let isLoading = false; // 添加一个标志来防止重复加载
+let isLoading = false;
 
 const jokeImage = document.getElementById('jokeImage');
 const chineseText = document.getElementById('chineseText');
@@ -34,7 +34,7 @@ function hideProgressBar() {
 }
 
 async function fetchJokes() {
-    if (isLoading) return; // 如果正在加载，直接返回
+    if (isLoading) return;
     isLoading = true;
     showProgressBar();
     try {
@@ -76,6 +76,10 @@ function getRandomJoke() {
     return selectedJoke;
 }
 
+function wrapTextWithSpans(text) {
+    return text.split('').map(char => `<span>${char}</span>`).join('');
+}
+
 async function displayJoke(joke) {
     console.log('Displaying joke:', joke);
     return new Promise((resolve, reject) => {
@@ -86,7 +90,7 @@ async function displayJoke(joke) {
                 jokeImage.alt = "中文笑话图片";
             }
             if (chineseText) {
-                chineseText.textContent = joke.chineseText;
+                chineseText.innerHTML = wrapTextWithSpans(joke.chineseText);
                 playButton.style.display = 'inline-block';
             }
             if (englishText) englishText.textContent = joke.englishTranslation;
@@ -150,6 +154,7 @@ async function showNextJoke() {
 
 async function playChineseAudio(text) {
     try {
+        console.log('Attempting to play audio for:', text);
         const response = await fetch('http://localhost:3000/tts', {
             method: 'POST',
             headers: {
@@ -159,15 +164,45 @@ async function playChineseAudio(text) {
         });
         
         if (!response.ok) {
-            throw new Error('Network response was not ok');
+            const errorText = await response.text();
+            throw new Error(`Network response was not ok: ${response.status} ${errorText}`);
         }
         
         const audioBlob = await response.blob();
         const audioUrl = URL.createObjectURL(audioBlob);
         const audio = new Audio(audioUrl);
+
+        // 获取音频时长
+        await new Promise(resolve => {
+            audio.addEventListener('loadedmetadata', resolve);
+            audio.load();
+        });
+
+        const duration = audio.duration;
+        const chars = document.querySelectorAll('.chinese-text span');
+        const intervalTime = duration / chars.length;
+
+        let charIndex = 0;
+        const animationInterval = setInterval(() => {
+            if (charIndex < chars.length) {
+                chars[charIndex].classList.add('animated');
+                charIndex++;
+            } else {
+                clearInterval(animationInterval);
+            }
+        }, intervalTime * 1000);
+
         audio.play();
+        console.log('Audio played successfully');
+
+        // 音频播放结束后重置动画
+        audio.addEventListener('ended', () => {
+            chars.forEach(char => char.classList.remove('animated'));
+        });
+
     } catch (error) {
         console.error('Error playing audio:', error);
+        console.log('Falling back to browser TTS');
         fallbackToBrowserTTS(text);
     }
 }
@@ -175,15 +210,35 @@ async function playChineseAudio(text) {
 function fallbackToBrowserTTS(text) {
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = 'zh-CN';
+    
+    const chars = document.querySelectorAll('.chinese-text span');
+    const totalDuration = text.length * 0.1; // 假设每个字符需要0.1秒
+    const intervalTime = totalDuration / chars.length;
+
+    let charIndex = 0;
+    const animationInterval = setInterval(() => {
+        if (charIndex < chars.length) {
+            chars[charIndex].classList.add('animated');
+            charIndex++;
+        } else {
+            clearInterval(animationInterval);
+        }
+    }, intervalTime * 1000);
+
+    utterance.onend = () => {
+        clearInterval(animationInterval);
+        chars.forEach(char => char.classList.remove('animated'));
+    };
+
     speechSynthesis.speak(utterance);
 }
 
 nextJokeBtn.addEventListener('click', async () => {
-    if (isLoading) return; // 如果正在加载，直接返回
+    if (isLoading) return;
     console.log('Next joke button clicked. Current jokes count:', jokes.length);
     showProgressBar();
     updateProgress(20);
-    await fetchJokes(); // 每次点击都重新获取笑话数据
+    await fetchJokes();
 });
 
 playButton.addEventListener('click', () => {

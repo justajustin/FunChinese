@@ -130,3 +130,17 @@ img {
         width: 95%;
     }
 }
+
+@keyframes colorChange {
+    from { color: black; }
+    to { color: #4CAF50; }
+}
+
+.chinese-text span {
+    display: inline-block;
+    color: black;
+}
+
+.chinese-text span.animated {
+    animation: colorChange 0.5s forwards;
+}
