@@ -6,8 +6,8 @@ import uuid
 import shutil
 
 # 文件路径
-DB_FILE = 'Startup_FunChinese/jokes_db.json'
-IMAGE_DIR = 'Startup_FunChinese/images/'
+DB_FILE = './jokes_db.json'
+IMAGE_DIR = './images/'
 
 def load_jokes():
     if os.path.exists(DB_FILE):
