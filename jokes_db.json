@@ -149,6 +149,39 @@
           "english": "trajectory"
         }
       ]
+    },
+    {
+      "id": "986aec56-4e2c-48eb-94a6-6d7002d9bdb1",
+      "imagePath": "images\\image_7.jpg",
+      "chineseText": "灯神：\"你可以许1个愿望。\"\n程序员：\"我想再许3个愿望。\"\n灯神：\"错误！不能增加剩余愿望数。\"\n程序员：\"那我想再许负2个愿望。\"\n灯神：\"你还可以许4294967295个愿望。\"",
+      "englishTranslation": "Genie: \"You can make 1 wish.\"\nProgrammer: \"I wish for 3 more wishes.\"\nGenie: \"Error! Cannot increase remaining wish count.\"\nProgrammer: \"Then I wish for -2 wishes.\"\nGenie: \"You can now make 4294967295 wishes.\"",
+      "keywords": [
+        {
+          "chinese": "灯神",
+          "pinyin": "dēng shén",
+          "english": "genie"
+        },
+        {
+          "chinese": "愿望",
+          "pinyin": "yuàn wàng",
+          "english": "wish"
+        },
+        {
+          "chinese": "程序员",
+          "pinyin": "chéng xù yuán",
+          "english": "programmer"
+        },
+        {
+          "chinese": "错误",
+          "pinyin": "cuò wù",
+          "english": "error"
+        },
+        {
+          "chinese": "剩余",
+          "pinyin": "shèng yú",
+          "english": "remaining"
+        }
+      ]
     }
   ]
 }
