@@ -1,16 +1,22 @@
-// 后端 server.js
+require('dotenv').config();
 const express = require('express');
 const axios = require('axios');
+const cors = require('cors');
+
 const app = express();
+const PORT = process.env.PORT || 3000;
 
-const API_KEY = 'NY17VOYMBjmGCTmzlJIlvLrV';
-const SECRET_KEY = 'fGSgxsORTXMtN600fD40n8A6SkIfHX2w';
-
+app.use(cors());
 app.use(express.json());
 
 async function getAccessToken() {
-    const response = await axios.get(`https://aip.baidubce.com/oauth/2.0/token?grant_type=client_credentials&client_id=${API_KEY}&client_secret=${SECRET_KEY}`);
-    return response.data.access_token;
+    try {
+        const response = await axios.get(`https://aip.baidubce.com/oauth/2.0/token?grant_type=client_credentials&client_id=${process.env.API_KEY}&client_secret=${process.env.SECRET_KEY}`);
+        return response.data.access_token;
+    } catch (error) {
+        console.error('Error getting access token:', error);
+        throw error;
+    }
 }
 
 app.post('/tts', async (req, res) => {
@@ -23,13 +29,13 @@ app.post('/tts', async (req, res) => {
             params: {
                 tex: text,
                 tok: accessToken,
-                cuid: '94542112',
+                cuid: process.env.APP_KEY,
                 ctp: 1,
                 lan: 'zh',
                 spd: 5,
                 pit: 5,
                 vol: 5,
-                per: 4  // 度丫丫音色
+                per: 4
             },
             responseType: 'arraybuffer'
         });
@@ -37,9 +43,11 @@ app.post('/tts', async (req, res) => {
         res.set('Content-Type', 'audio/mp3');
         res.send(response.data);
     } catch (error) {
-        console.error('Error:', error);
-        res.status(500).send('Error generating audio');
+        console.error('Error in TTS:', error);
+        res.status(500).send('Error generating audio: ' + error.message);
     }
 });
 
-app.listen(3000, () => console.log('Server running on port 3000'));
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+});

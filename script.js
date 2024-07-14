@@ -150,7 +150,7 @@ async function showNextJoke() {
 
 async function playChineseAudio(text) {
     try {
-        const response = await fetch('/tts', {
+        const response = await fetch('http://localhost:3000/tts', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
