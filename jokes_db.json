@@ -55,6 +55,34 @@
           "english": "to be enslaved"
         }
       ]
+    },
+    {
+      "id": "b36f103d-91f0-4024-84e6-98e4f66714dc",
+      "imagePath": "images\\image_4.jpg",
+      "chineseText": "“你可以狙击我的心脏和头顶，请不要击中我的耳朵，因为我要倾听人民的声音” ——特朗普",
+      "englishTranslation": "\"You can snipe at my heart and head, but please don't hit my ears, because I need to listen to the voice of the people\" - Trump",
+      "keywords": [
+        {
+          "chinese": "狙击",
+          "pinyin": "jū jī",
+          "english": "snipe"
+        },
+        {
+          "chinese": "耳朵",
+          "pinyin": "ěr duo",
+          "english": "ear"
+        },
+        {
+          "chinese": "倾听",
+          "pinyin": "qīng tīng",
+          "english": "listen"
+        },
+        {
+          "chinese": "人民",
+          "pinyin": "rén mín",
+          "english": "people"
+        }
+      ]
     }
   ]
 }
