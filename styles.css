@@ -94,12 +94,6 @@ img {
     margin-left: 8px;
 }
 
-@media (max-width: 600px) {
-    .container {
-        width: 95%;
-    }
-}
-
 .play-button {
     background: none;
     border: none;
@@ -111,4 +105,28 @@ img {
 
 .play-button svg {
     fill: #4CAF50;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 4px;
+    background-color: #e0e0e0;
+    position: relative;
+    overflow: hidden;
+    display: none;
+}
+
+.progress {
+    width: 0;
+    height: 100%;
+    background-color: var(--primary-color);
+    position: absolute;
+    left: 0;
+    transition: width 0.3s ease;
+}
+
+@media (max-width: 600px) {
+    .container {
+        width: 95%;
+    }
 }

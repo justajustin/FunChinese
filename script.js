@@ -8,23 +8,52 @@ const englishText = document.getElementById('englishText');
 const keywords = document.getElementById('keywords');
 const nextJokeBtn = document.getElementById('nextJokeBtn');
 const jokeContent = document.querySelector('.joke-content');
+const playButton = document.getElementById('playButton');
+const progressBar = document.getElementById('progressBar');
+const progress = progressBar.querySelector('.progress');
 
-// 在 fetchJokes 函数中添加时间戳以防止缓存
+let audioContext = null;
+
+function initAudioContext() {
+    if (!audioContext) {
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    }
+}
+
+function showProgressBar() {
+    progressBar.style.display = 'block';
+    progress.style.width = '0%';
+}
+
+function updateProgress(percent) {
+    progress.style.width = `${percent}%`;
+}
+
+function hideProgressBar() {
+    progressBar.style.display = 'none';
+}
+
 async function fetchJokes() {
+    showProgressBar();
     try {
+        updateProgress(20);
         const response = await fetch(`./jokes_db.json?t=${new Date().getTime()}`);
+        updateProgress(60);
         const data = await response.json();
+        updateProgress(80);
         jokes = data.jokes;
         console.log('Loaded jokes:', jokes);
         await showNextJoke();
+        updateProgress(100);
         preloadNextJoke();
     } catch (error) {
         console.error('Error fetching jokes:', error);
         jokeContent.innerHTML = '<p>抱歉，加载笑话时出现问题。请稍后再试。</p>';
+    } finally {
+        setTimeout(hideProgressBar, 300);
     }
 }
 
-// 修改 getRandomJoke 函数以确保不重复
 function getRandomJoke() {
     if (jokes.length <= 1) return jokes[0];
     let newIndex;
@@ -40,17 +69,34 @@ function displayJoke(joke) {
     console.log('Displaying joke:', joke);
     if (jokeImage) jokeImage.src = joke.imagePath;
     if (jokeImage) jokeImage.alt = "中文笑话图片";
-    if (chineseText) chineseText.textContent = joke.chineseText;
+    if (chineseText) {
+        chineseText.textContent = joke.chineseText;
+        playButton.style.display = 'inline-block';
+    }
     if (englishText) englishText.textContent = joke.englishTranslation;
     
     if (keywords) {
         keywords.innerHTML = joke.keywords.map(word => 
-            `<p><strong>${word.chinese}:</strong> ${word.pinyin} - ${word.english}</p>`
+            `<p>
+                <strong>${word.chinese}</strong>
+                <button class="play-button word-play" data-text="${word.chinese}">
+                    <svg viewBox="0 0 24 24" width="16" height="16">
+                        <path d="M8 5v14l11-7z"/>
+                    </svg>
+                </button>
+                : ${word.pinyin} - ${word.english}
+            </p>`
         ).join('');
+
+        keywords.querySelectorAll('.word-play').forEach(button => {
+            button.addEventListener('click', (e) => {
+                const text = e.currentTarget.getAttribute('data-text');
+                playChineseAudio(text);
+            });
+        });
     }
 }
 
-// 在 showNextJoke 函数中添加更多日志
 async function showNextJoke() {
     console.log('Showing next joke');
     if (jokes.length === 0) {
@@ -59,8 +105,10 @@ async function showNextJoke() {
     }
 
     jokeContent.classList.add('fade');
+    showProgressBar();
     
     await new Promise(resolve => setTimeout(resolve, 300));
+    updateProgress(50);
 
     let jokeToShow;
     if (nextJoke) {
@@ -72,9 +120,10 @@ async function showNextJoke() {
     console.log('Joke to show:', jokeToShow);
     displayJoke(jokeToShow);
 
+    updateProgress(100);
     jokeContent.classList.remove('fade');
+    setTimeout(hideProgressBar, 300);
 }
-
 
 function preloadNextJoke() {
     nextJoke = getRandomJoke();
@@ -83,38 +132,6 @@ function preloadNextJoke() {
         img.src = nextJoke.imagePath;
     }
 }
-
-// 确保每次点击按钮时都重新获取笑话
-nextJokeBtn.addEventListener('click', async () => {
-    await fetchJokes(); // 重新加载笑话数据
-    await showNextJoke();
-    preloadNextJoke();
-});
-
-// Fetch jokes when the page loads
-fetchJokes();
-
-// Service Worker for offline functionality
-if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js').then(registration => {
-            console.log('ServiceWorker registration successful');
-        }, err => {
-            console.log('ServiceWorker registration failed: ', err);
-        });
-    });
-}
-
-const playButton = document.getElementById('playButton');
-let audioContext = null;
-
-function initAudioContext() {
-    if (!audioContext) {
-        audioContext = new (window.AudioContext || window.webkitAudioContext)();
-    }
-}
-
-// 修改 script.js 中的 playChineseAudio 函数
 
 async function playChineseAudio(text) {
     try {
@@ -136,7 +153,6 @@ async function playChineseAudio(text) {
         audio.play();
     } catch (error) {
         console.error('Error playing audio:', error);
-        // 如果AI语音失败，可以回退到浏览器API
         fallbackToBrowserTTS(text);
     }
 }
@@ -147,40 +163,31 @@ function fallbackToBrowserTTS(text) {
     speechSynthesis.speak(utterance);
 }
 
+nextJokeBtn.addEventListener('click', async () => {
+    showProgressBar();
+    updateProgress(20);
+    await fetchJokes();
+    updateProgress(60);
+    await showNextJoke();
+    updateProgress(80);
+    preloadNextJoke();
+    updateProgress(100);
+    setTimeout(hideProgressBar, 300);
+});
+
 playButton.addEventListener('click', () => {
     const chineseText = document.getElementById('chineseText').textContent;
     playChineseAudio(chineseText);
 });
 
-function displayJoke(joke) {
-    console.log('Displaying joke:', joke);
-    if (jokeImage) jokeImage.src = joke.imagePath;
-    if (jokeImage) jokeImage.alt = "中文笑话图片";
-    if (chineseText) {
-        chineseText.textContent = joke.chineseText;
-        playButton.style.display = 'inline-block'; // 显示播放按钮
-    }
-    if (englishText) englishText.textContent = joke.englishTranslation;
-    
-    if (keywords) {
-        keywords.innerHTML = joke.keywords.map(word => 
-            `<p>
-                <strong>${word.chinese}</strong>
-                <button class="play-button word-play" data-text="${word.chinese}">
-                    <svg viewBox="0 0 24 24" width="16" height="16">
-                        <path d="M8 5v14l11-7z"/>
-                    </svg>
-                </button>
-                : ${word.pinyin} - ${word.english}
-            </p>`
-        ).join('');
+fetchJokes();
 
-        // 为每个关键词添加播放功能
-        keywords.querySelectorAll('.word-play').forEach(button => {
-            button.addEventListener('click', (e) => {
-                const text = e.currentTarget.getAttribute('data-text');
-                playChineseAudio(text);
-            });
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js').then(registration => {
+            console.log('ServiceWorker registration successful');
+        }, err => {
+            console.log('ServiceWorker registration failed: ', err);
         });
-    }
+    });
 }
