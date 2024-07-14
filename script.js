@@ -14,11 +14,11 @@ async function fetchJokes() {
         const response = await fetch('jokes_db.json');
         const data = await response.json();
         jokes = data.jokes;
+        console.log('Loaded jokes:', jokes); // 添加这行
         await showNextJoke();
         preloadNextJoke();
     } catch (error) {
         console.error('Error fetching jokes:', error);
-        // Display a user-friendly error message
         jokeContent.innerHTML = '<p>抱歉，加载笑话时出现问题。请稍后再试。</p>';
     }
 }
@@ -33,17 +33,21 @@ function getRandomJoke() {
 }
 
 function displayJoke(joke) {
-    jokeImage.src = joke.imagePath;
-    jokeImage.alt = "中文笑话图片";
-    chineseText.textContent = joke.chineseText;
-    englishText.textContent = joke.englishTranslation;
+    console.log('Displaying joke:', joke); // 添加这行
+    if (jokeImage) jokeImage.src = joke.imagePath;
+    if (jokeImage) jokeImage.alt = "中文笑话图片";
+    if (chineseText) chineseText.textContent = joke.chineseText;
+    if (englishText) englishText.textContent = joke.englishTranslation;
     
-    keywords.innerHTML = joke.keywords.map(word => 
-        `<p><strong>${word.chinese}:</strong> ${word.pinyin} - ${word.english}</p>`
-    ).join('');
+    if (keywords) {
+        keywords.innerHTML = joke.keywords.map(word => 
+            `<p><strong>${word.chinese}:</strong> ${word.pinyin} - ${word.english}</p>`
+        ).join('');
+    }
 }
 
 async function showNextJoke() {
+    console.log('Showing next joke');
     if (jokes.length === 0) {
         console.error('No jokes available');
         return;
@@ -53,13 +57,15 @@ async function showNextJoke() {
     
     await new Promise(resolve => setTimeout(resolve, 300));
 
+    let jokeToShow;
     if (nextJoke) {
-        displayJoke(nextJoke);
+        jokeToShow = nextJoke;
         nextJoke = null;
     } else {
-        const joke = getRandomJoke();
-        displayJoke(joke);
+        jokeToShow = getRandomJoke();
     }
+    console.log('Joke to show:', jokeToShow);
+    displayJoke(jokeToShow);
 
     jokeContent.classList.remove('fade');
 }
