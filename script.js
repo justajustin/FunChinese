@@ -76,8 +76,8 @@ function getRandomJoke() {
     return selectedJoke;
 }
 
-function wrapTextWithSpans(text) {
-    return text.split('').map(char => `<span>${char}</span>`).join('');
+function wrapTextWithSpans(text, className) {
+    return text.split('').map(char => `<span class="${className}">${char}</span>`).join('');
 }
 
 async function displayJoke(joke) {
@@ -90,7 +90,7 @@ async function displayJoke(joke) {
                 jokeImage.alt = "中文笑话图片";
             }
             if (chineseText) {
-                chineseText.innerHTML = wrapTextWithSpans(joke.chineseText);
+                chineseText.innerHTML = wrapTextWithSpans(joke.chineseText, 'main-text');
                 playButton.style.display = 'inline-block';
             }
             if (englishText) englishText.textContent = joke.englishTranslation;
@@ -98,7 +98,7 @@ async function displayJoke(joke) {
             if (keywords) {
                 keywords.innerHTML = joke.keywords.map(word => 
                     `<p>
-                        <strong>${word.chinese}</strong>
+                        <strong>${wrapTextWithSpans(word.chinese, 'keyword-text')}</strong>
                         <button class="play-button word-play" data-text="${word.chinese}">
                             <svg viewBox="0 0 24 24" width="16" height="16">
                                 <path d="M8 5v14l11-7z"/>
@@ -111,7 +111,7 @@ async function displayJoke(joke) {
                 keywords.querySelectorAll('.word-play').forEach(button => {
                     button.addEventListener('click', (e) => {
                         const text = e.currentTarget.getAttribute('data-text');
-                        playChineseAudio(text);
+                        playChineseAudio(text, true);
                     });
                 });
             }
@@ -152,7 +152,7 @@ async function showNextJoke() {
     }
 }
 
-async function playChineseAudio(text) {
+async function playChineseAudio(text, isKeyword = false) {
     try {
         console.log('Attempting to play audio for:', text);
         const response = await fetch('http://localhost:3000/tts', {
@@ -179,7 +179,9 @@ async function playChineseAudio(text) {
         });
 
         const duration = audio.duration;
-        const chars = document.querySelectorAll('.chinese-text span');
+        const chars = isKeyword 
+            ? document.querySelectorAll(`.keyword-text[data-text="${text}"] span`)
+            : document.querySelectorAll('.main-text');
         const intervalTime = duration / chars.length;
 
         let charIndex = 0;
@@ -203,15 +205,17 @@ async function playChineseAudio(text) {
     } catch (error) {
         console.error('Error playing audio:', error);
         console.log('Falling back to browser TTS');
-        fallbackToBrowserTTS(text);
+        fallbackToBrowserTTS(text, isKeyword);
     }
 }
 
-function fallbackToBrowserTTS(text) {
+function fallbackToBrowserTTS(text, isKeyword = false) {
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = 'zh-CN';
     
-    const chars = document.querySelectorAll('.chinese-text span');
+    const chars = isKeyword 
+        ? document.querySelectorAll(`.keyword-text[data-text="${text}"] span`)
+        : document.querySelectorAll('.main-text');
     const totalDuration = text.length * 0.1; // 假设每个字符需要0.1秒
     const intervalTime = totalDuration / chars.length;
 
@@ -243,7 +247,7 @@ nextJokeBtn.addEventListener('click', async () => {
 
 playButton.addEventListener('click', () => {
     const chineseText = document.getElementById('chineseText').textContent;
-    playChineseAudio(chineseText);
+    playChineseAudio(chineseText, false);
 });
 
 fetchJokes();
