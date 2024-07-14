@@ -32,6 +32,29 @@
           "english": "illegal earnings"
         }
       ]
+    },
+    {
+      "id": "eef88be6-ab9e-4e7c-813e-e7d7e8a7b9d4",
+      "imagePath": "images\\image_2.jpg",
+      "chineseText": "兽人永不为奴！",
+      "englishTranslation": "Beasts shall never be enslaved!",
+      "keywords": [
+        {
+          "chinese": "兽人",
+          "pinyin": "shòu rén",
+          "english": "beast-man / orc"
+        },
+        {
+          "chinese": "永不",
+          "pinyin": "yǒng bù",
+          "english": "never"
+        },
+        {
+          "chinese": "为奴",
+          "pinyin": "wéi nú",
+          "english": "to be enslaved"
+        }
+      ]
     }
   ]
 }
