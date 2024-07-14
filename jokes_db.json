@@ -83,6 +83,39 @@
           "english": "people"
         }
       ]
+    },
+    {
+      "id": "333146a5-a8fc-4371-acec-47554dd34a03",
+      "imagePath": "images\\image_5.jpg",
+      "chineseText": "“我这样顶级的m居然没法忍受生活的凌辱”              “我这种顶级s竟然调教不了自己的作息”",
+      "englishTranslation": "\"As a top-tier m, I can't endure the humiliation of life.\"              \"As a top-tier s, I surprisingly can't discipline my own schedule.\"",
+      "keywords": [
+        {
+          "chinese": "顶级",
+          "pinyin": "dǐng jí",
+          "english": "top-tier"
+        },
+        {
+          "chinese": "忍受",
+          "pinyin": "rěn shòu",
+          "english": "endure"
+        },
+        {
+          "chinese": "凌辱",
+          "pinyin": "líng rǔ",
+          "english": "humiliation"
+        },
+        {
+          "chinese": "调教",
+          "pinyin": "tiáo jiào",
+          "english": "discipline"
+        },
+        {
+          "chinese": "作息",
+          "pinyin": "zuò xī",
+          "english": "schedule"
+        }
+      ]
     }
   ]
 }
