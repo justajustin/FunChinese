@@ -14,7 +14,7 @@ async function fetchJokes() {
         const response = await fetch('jokes_db.json');
         const data = await response.json();
         jokes = data.jokes;
-        console.log('Loaded jokes:', jokes); // 添加这行
+        console.log('Loaded jokes:', jokes);
         await showNextJoke();
         preloadNextJoke();
     } catch (error) {
@@ -33,7 +33,7 @@ function getRandomJoke() {
 }
 
 function displayJoke(joke) {
-    console.log('Displaying joke:', joke); // 添加这行
+    console.log('Displaying joke:', joke);
     if (jokeImage) jokeImage.src = joke.imagePath;
     if (jokeImage) jokeImage.alt = "中文笑话图片";
     if (chineseText) chineseText.textContent = joke.chineseText;
