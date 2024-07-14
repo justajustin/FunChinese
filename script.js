@@ -56,13 +56,12 @@ async function fetchJokes() {
 
 function getRandomJoke() {
     if (jokes.length <= 1) return jokes[0];
-    let newIndex;
-    do {
-        newIndex = Math.floor(Math.random() * jokes.length);
-    } while (newIndex === currentJokeIndex);
-    currentJokeIndex = newIndex;
+    let availableJokes = jokes.filter((_, index) => index !== currentJokeIndex);
+    let randomIndex = Math.floor(Math.random() * availableJokes.length);
+    let selectedJoke = availableJokes[randomIndex];
+    currentJokeIndex = jokes.indexOf(selectedJoke);
     console.log('Selected joke index:', currentJokeIndex);
-    return jokes[currentJokeIndex];
+    return selectedJoke;
 }
 
 function displayJoke(joke) {
@@ -101,28 +100,29 @@ async function showNextJoke() {
     console.log('Showing next joke');
     if (jokes.length === 0) {
         console.error('No jokes available');
+        jokeContent.innerHTML = '<p>抱歉，没有可用的笑话。</p>';
         return;
     }
 
-    jokeContent.classList.add('fade');
-    showProgressBar();
-    
-    await new Promise(resolve => setTimeout(resolve, 300));
-    updateProgress(50);
+    try {
+        jokeContent.classList.add('fade');
+        showProgressBar();
+        
+        await new Promise(resolve => setTimeout(resolve, 300));
+        updateProgress(50);
 
-    let jokeToShow;
-    if (nextJoke) {
-        jokeToShow = nextJoke;
-        nextJoke = null;
-    } else {
-        jokeToShow = getRandomJoke();
+        let jokeToShow = getRandomJoke();
+        console.log('Joke to show:', jokeToShow);
+        displayJoke(jokeToShow);
+
+        updateProgress(100);
+        jokeContent.classList.remove('fade');
+    } catch (error) {
+        console.error('Error showing next joke:', error);
+        jokeContent.innerHTML = '<p>抱歉，显示笑话时出现问题。</p>';
+    } finally {
+        setTimeout(hideProgressBar, 300);
     }
-    console.log('Joke to show:', jokeToShow);
-    displayJoke(jokeToShow);
-
-    updateProgress(100);
-    jokeContent.classList.remove('fade');
-    setTimeout(hideProgressBar, 300);
 }
 
 function preloadNextJoke() {
