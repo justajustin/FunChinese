@@ -9,9 +9,10 @@ const keywords = document.getElementById('keywords');
 const nextJokeBtn = document.getElementById('nextJokeBtn');
 const jokeContent = document.querySelector('.joke-content');
 
+// 在 fetchJokes 函数中添加时间戳以防止缓存
 async function fetchJokes() {
     try {
-        const response = await fetch('jokes_db.json');
+        const response = await fetch(`./jokes_db.json?t=${new Date().getTime()}`);
         const data = await response.json();
         jokes = data.jokes;
         console.log('Loaded jokes:', jokes);
@@ -23,12 +24,15 @@ async function fetchJokes() {
     }
 }
 
+// 修改 getRandomJoke 函数以确保不重复
 function getRandomJoke() {
+    if (jokes.length <= 1) return jokes[0];
     let newIndex;
     do {
         newIndex = Math.floor(Math.random() * jokes.length);
-    } while (newIndex === currentJokeIndex && jokes.length > 1);
+    } while (newIndex === currentJokeIndex);
     currentJokeIndex = newIndex;
+    console.log('Selected joke index:', currentJokeIndex);
     return jokes[currentJokeIndex];
 }
 
@@ -46,6 +50,7 @@ function displayJoke(joke) {
     }
 }
 
+// 在 showNextJoke 函数中添加更多日志
 async function showNextJoke() {
     console.log('Showing next joke');
     if (jokes.length === 0) {
@@ -70,6 +75,7 @@ async function showNextJoke() {
     jokeContent.classList.remove('fade');
 }
 
+
 function preloadNextJoke() {
     nextJoke = getRandomJoke();
     if (nextJoke.imagePath) {
@@ -78,7 +84,9 @@ function preloadNextJoke() {
     }
 }
 
+// 确保每次点击按钮时都重新获取笑话
 nextJokeBtn.addEventListener('click', async () => {
+    await fetchJokes(); // 重新加载笑话数据
     await showNextJoke();
     preloadNextJoke();
 });
