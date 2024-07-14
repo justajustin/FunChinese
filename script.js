@@ -37,12 +37,18 @@ async function fetchJokes() {
     showProgressBar();
     try {
         updateProgress(20);
+        console.log('Fetching jokes...');
         const response = await fetch(`./jokes_db.json?t=${new Date().getTime()}`);
         updateProgress(60);
         const data = await response.json();
         updateProgress(80);
         jokes = data.jokes;
         console.log('Loaded jokes:', jokes);
+        console.log('Number of jokes loaded:', jokes.length); // 新增这行
+        if (jokes.length === 0) {
+            console.error('No jokes loaded from the file');
+            return;
+        }
         await showNextJoke();
         updateProgress(100);
         preloadNextJoke();
@@ -53,7 +59,6 @@ async function fetchJokes() {
         setTimeout(hideProgressBar, 300);
     }
 }
-
 function getRandomJoke() {
     if (jokes.length <= 1) return jokes[0];
     let availableJokes = jokes.filter((_, index) => index !== currentJokeIndex);
@@ -166,7 +171,7 @@ function fallbackToBrowserTTS(text) {
 nextJokeBtn.addEventListener('click', async () => {
     showProgressBar();
     updateProgress(20);
-    await fetchJokes();
+    await fetchJokes(); // 每次点击都重新获取笑话数据
     updateProgress(60);
     await showNextJoke();
     updateProgress(80);
