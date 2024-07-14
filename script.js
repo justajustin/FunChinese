@@ -80,6 +80,19 @@ function wrapTextWithSpans(text, className) {
     return text.split('').map(char => `<span class="${className}">${char}</span>`).join('');
 }
 
+function processChineseText(text) {
+    // 首先替换换行符为 <br> 标签
+    const textWithLineBreaks = text.replace(/\n/g, '<br>');
+    // 然后将每个字符（除了 <br> 标签）包装在 span 中
+    return textWithLineBreaks.split(/(<br>)/).map(part => {
+        if (part === '<br>') {
+            return part;
+        } else {
+            return wrapTextWithSpans(part, 'main-text');
+        }
+    }).join('');
+}
+
 async function displayJoke(joke) {
     console.log('Displaying joke:', joke);
     return new Promise((resolve, reject) => {
@@ -90,10 +103,10 @@ async function displayJoke(joke) {
                 jokeImage.alt = "中文笑话图片";
             }
             if (chineseText) {
-                chineseText.innerHTML = wrapTextWithSpans(joke.chineseText, 'main-text');
+                chineseText.innerHTML = processChineseText(joke.chineseText);
                 playButton.style.display = 'inline-block';
             }
-            if (englishText) englishText.textContent = joke.englishTranslation;
+            if (englishText) englishText.innerHTML = joke.englishTranslation.replace(/\n/g, '<br>');
             
             if (keywords) {
                 keywords.innerHTML = joke.keywords.map(word => 

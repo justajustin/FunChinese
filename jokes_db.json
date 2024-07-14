@@ -85,39 +85,6 @@
       ]
     },
     {
-      "id": "333146a5-a8fc-4371-acec-47554dd34a03",
-      "imagePath": "images\\image_5.jpg",
-      "chineseText": "“我这样顶级的m居然没法忍受生活的凌辱”              “我这种顶级s竟然调教不了自己的作息”",
-      "englishTranslation": "\"As a top-tier m, I can't endure the humiliation of life.\"              \"As a top-tier s, I surprisingly can't discipline my own schedule.\"",
-      "keywords": [
-        {
-          "chinese": "顶级",
-          "pinyin": "dǐng jí",
-          "english": "top-tier"
-        },
-        {
-          "chinese": "忍受",
-          "pinyin": "rěn shòu",
-          "english": "endure"
-        },
-        {
-          "chinese": "凌辱",
-          "pinyin": "líng rǔ",
-          "english": "humiliation"
-        },
-        {
-          "chinese": "调教",
-          "pinyin": "tiáo jiào",
-          "english": "discipline"
-        },
-        {
-          "chinese": "作息",
-          "pinyin": "zuò xī",
-          "english": "schedule"
-        }
-      ]
-    },
-    {
       "id": "c333c8f5-f560-4f90-ac5d-c5b1b46594a5",
       "imagePath": "images\\image_6.jpg",
       "chineseText": "特朗普遇刺神照，是由美联社驻华盛顿首席摄影师Evan Vucci用索尼A9 III拍摄！制胜决定性瞬间，全域快门，120张/秒raw记录世纪之照（图2子弹飞行轨迹）",
@@ -180,6 +147,39 @@
           "chinese": "剩余",
           "pinyin": "shèng yú",
           "english": "remaining"
+        }
+      ]
+    },
+    {
+      "id": "28b0a88e-c83e-421a-8f8f-1cc8bc878bf3",
+      "imagePath": "images\\image_5.jpg",
+      "chineseText": "“我这样顶级的m居然没法忍受生活的凌辱”<br>“我这种顶级s竟然调教不了自己的作息”",
+      "englishTranslation": "\"As a top-tier m, I can't endure the humiliation of life.\"<br>\"As a top-tier s, I surprisingly can't discipline my own schedule.\"",
+      "keywords": [
+        {
+          "chinese": "顶级",
+          "pinyin": "dǐng jí",
+          "english": "top-tier"
+        },
+        {
+          "chinese": "忍受",
+          "pinyin": "rěn shòu",
+          "english": "endure"
+        },
+        {
+          "chinese": "凌辱",
+          "pinyin": "líng rǔ",
+          "english": "humiliation"
+        },
+        {
+          "chinese": "调教",
+          "pinyin": "tiáo jiào",
+          "english": "discipline"
+        },
+        {
+          "chinese": "作息",
+          "pinyin": "zuò xī",
+          "english": "schedule"
         }
       ]
     }
