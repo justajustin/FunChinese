@@ -99,3 +99,16 @@ img {
         width: 95%;
     }
 }
+
+.play-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    margin-left: 10px;
+    vertical-align: middle;
+}
+
+.play-button svg {
+    fill: #4CAF50;
+}
