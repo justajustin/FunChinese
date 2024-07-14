@@ -1,6 +1,7 @@
 let jokes = [];
 let currentJokeIndex = -1;
 let isLoading = false;
+let currentAudio = null;
 
 const jokeImage = document.getElementById('jokeImage');
 const chineseText = document.getElementById('chineseText');
@@ -18,6 +19,60 @@ function initAudioContext() {
     if (!audioContext) {
         audioContext = new (window.AudioContext || window.webkitAudioContext)();
     }
+}
+
+let db;
+
+const dbName = 'AudioCache';
+const storeName = 'audioData';
+
+const request = indexedDB.open(dbName, 1);
+
+request.onerror = function(event) {
+    console.error("IndexedDB error:", event.target.error);
+};
+
+request.onsuccess = function(event) {
+    db = event.target.result;
+    console.log("IndexedDB opened successfully");
+};
+
+request.onupgradeneeded = function(event) {
+    db = event.target.result;
+    const objectStore = db.createObjectStore(storeName, { keyPath: "text" });
+    console.log("Object store created");
+};
+
+async function getAudioFromCache(text) {
+    return new Promise((resolve, reject) => {
+        const transaction = db.transaction([storeName], "readonly");
+        const objectStore = transaction.objectStore(storeName);
+        const request = objectStore.get(text);
+
+        request.onerror = function(event) {
+            reject("Error fetching audio from cache");
+        };
+
+        request.onsuccess = function(event) {
+            resolve(request.result ? request.result.audio : null);
+        };
+    });
+}
+
+async function saveAudioToCache(text, audio) {
+    return new Promise((resolve, reject) => {
+        const transaction = db.transaction([storeName], "readwrite");
+        const objectStore = transaction.objectStore(storeName);
+        const request = objectStore.put({ text: text, audio: audio });
+
+        request.onerror = function(event) {
+            reject("Error saving audio to cache");
+        };
+
+        request.onsuccess = function(event) {
+            resolve();
+        };
+    });
 }
 
 function showProgressBar() {
@@ -81,9 +136,7 @@ function wrapTextWithSpans(text, className) {
 }
 
 function processChineseText(text) {
-    // 首先替换换行符为 <br> 标签
     const textWithLineBreaks = text.replace(/\n/g, '<br>');
-    // 然后将每个字符（除了 <br> 标签）包装在 span 中
     return textWithLineBreaks.split(/(<br>)/).map(part => {
         if (part === '<br>') {
             return part;
@@ -144,6 +197,8 @@ async function showNextJoke() {
         return;
     }
 
+    stopCurrentAudio();
+
     try {
         jokeContent.classList.add('fade');
         showProgressBar();
@@ -165,27 +220,46 @@ async function showNextJoke() {
     }
 }
 
+function stopCurrentAudio() {
+    if (currentAudio) {
+        currentAudio.pause();
+        currentAudio.currentTime = 0;
+        currentAudio = null;
+    }
+}
+
 async function playChineseAudio(text, isKeyword = false) {
     try {
+        stopCurrentAudio();
+
         console.log('Attempting to play audio for:', text);
-        const response = await fetch('http://localhost:3000/tts', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ text })
-        });
         
-        if (!response.ok) {
-            const errorText = await response.text();
-            throw new Error(`Network response was not ok: ${response.status} ${errorText}`);
+        const plainText = text.replace(/<[^>]*>/g, '');
+        
+        let audioBlob = await getAudioFromCache(plainText);
+        
+        if (!audioBlob) {
+            const response = await fetch('http://localhost:3000/tts', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ text: plainText })
+            });
+            
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(`Network response was not ok: ${response.status} ${errorText}`);
+            }
+            
+            audioBlob = await response.blob();
+            await saveAudioToCache(plainText, audioBlob);
         }
-        
-        const audioBlob = await response.blob();
+
         const audioUrl = URL.createObjectURL(audioBlob);
         const audio = new Audio(audioUrl);
+        currentAudio = audio;
 
-        // 获取音频时长
         await new Promise(resolve => {
             audio.addEventListener('loadedmetadata', resolve);
             audio.load();
@@ -193,8 +267,8 @@ async function playChineseAudio(text, isKeyword = false) {
 
         const duration = audio.duration;
         const chars = isKeyword 
-            ? document.querySelectorAll(`.keyword-text[data-text="${text}"] span`)
-            : document.querySelectorAll('.main-text');
+            ? document.querySelectorAll(`.keyword-text[data-text="${plainText}"] span`)
+            : document.querySelectorAll('.chinese-text span');
         const intervalTime = duration / chars.length;
 
         let charIndex = 0;
@@ -210,15 +284,15 @@ async function playChineseAudio(text, isKeyword = false) {
         audio.play();
         console.log('Audio played successfully');
 
-        // 音频播放结束后重置动画
         audio.addEventListener('ended', () => {
             chars.forEach(char => char.classList.remove('animated'));
+            currentAudio = null;
         });
 
     } catch (error) {
         console.error('Error playing audio:', error);
         console.log('Falling back to browser TTS');
-        fallbackToBrowserTTS(text, isKeyword);
+        fallbackToBrowserTTS(plainText, isKeyword);
     }
 }
 
@@ -229,7 +303,7 @@ function fallbackToBrowserTTS(text, isKeyword = false) {
     const chars = isKeyword 
         ? document.querySelectorAll(`.keyword-text[data-text="${text}"] span`)
         : document.querySelectorAll('.main-text');
-    const totalDuration = text.length * 0.1; // 假设每个字符需要0.1秒
+    const totalDuration = text.length * 0.1;
     const intervalTime = totalDuration / chars.length;
 
     let charIndex = 0;
@@ -262,6 +336,8 @@ playButton.addEventListener('click', () => {
     const chineseText = document.getElementById('chineseText').textContent;
     playChineseAudio(chineseText, false);
 });
+
+window.addEventListener('beforeunload', stopCurrentAudio);
 
 fetchJokes();
 
