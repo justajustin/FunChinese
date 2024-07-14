@@ -1,6 +1,6 @@
 let jokes = [];
 let currentJokeIndex = -1;
-let nextJoke = null;
+let isLoading = false; // 添加一个标志来防止重复加载
 
 const jokeImage = document.getElementById('jokeImage');
 const chineseText = document.getElementById('chineseText');
@@ -34,6 +34,8 @@ function hideProgressBar() {
 }
 
 async function fetchJokes() {
+    if (isLoading) return; // 如果正在加载，直接返回
+    isLoading = true;
     showProgressBar();
     try {
         updateProgress(20);
@@ -44,24 +46,29 @@ async function fetchJokes() {
         updateProgress(80);
         jokes = data.jokes;
         console.log('Loaded jokes:', jokes);
-        console.log('Number of jokes loaded:', jokes.length); // 新增这行
+        console.log('Number of jokes loaded:', jokes.length);
         if (jokes.length === 0) {
             console.error('No jokes loaded from the file');
             return;
         }
         await showNextJoke();
         updateProgress(100);
-        preloadNextJoke();
     } catch (error) {
         console.error('Error fetching jokes:', error);
         jokeContent.innerHTML = '<p>抱歉，加载笑话时出现问题。请稍后再试。</p>';
     } finally {
-        setTimeout(hideProgressBar, 300);
+        setTimeout(() => {
+            hideProgressBar();
+            isLoading = false;
+        }, 300);
     }
 }
+
 function getRandomJoke() {
+    console.log('Getting random joke. Total jokes:', jokes.length);
     if (jokes.length <= 1) return jokes[0];
     let availableJokes = jokes.filter((_, index) => index !== currentJokeIndex);
+    console.log('Available jokes for selection:', availableJokes.length);
     let randomIndex = Math.floor(Math.random() * availableJokes.length);
     let selectedJoke = availableJokes[randomIndex];
     currentJokeIndex = jokes.indexOf(selectedJoke);
@@ -69,40 +76,51 @@ function getRandomJoke() {
     return selectedJoke;
 }
 
-function displayJoke(joke) {
+async function displayJoke(joke) {
     console.log('Displaying joke:', joke);
-    if (jokeImage) jokeImage.src = joke.imagePath;
-    if (jokeImage) jokeImage.alt = "中文笑话图片";
-    if (chineseText) {
-        chineseText.textContent = joke.chineseText;
-        playButton.style.display = 'inline-block';
-    }
-    if (englishText) englishText.textContent = joke.englishTranslation;
-    
-    if (keywords) {
-        keywords.innerHTML = joke.keywords.map(word => 
-            `<p>
-                <strong>${word.chinese}</strong>
-                <button class="play-button word-play" data-text="${word.chinese}">
-                    <svg viewBox="0 0 24 24" width="16" height="16">
-                        <path d="M8 5v14l11-7z"/>
-                    </svg>
-                </button>
-                : ${word.pinyin} - ${word.english}
-            </p>`
-        ).join('');
+    return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.onload = () => {
+            if (jokeImage) {
+                jokeImage.src = img.src;
+                jokeImage.alt = "中文笑话图片";
+            }
+            if (chineseText) {
+                chineseText.textContent = joke.chineseText;
+                playButton.style.display = 'inline-block';
+            }
+            if (englishText) englishText.textContent = joke.englishTranslation;
+            
+            if (keywords) {
+                keywords.innerHTML = joke.keywords.map(word => 
+                    `<p>
+                        <strong>${word.chinese}</strong>
+                        <button class="play-button word-play" data-text="${word.chinese}">
+                            <svg viewBox="0 0 24 24" width="16" height="16">
+                                <path d="M8 5v14l11-7z"/>
+                            </svg>
+                        </button>
+                        : ${word.pinyin} - ${word.english}
+                    </p>`
+                ).join('');
 
-        keywords.querySelectorAll('.word-play').forEach(button => {
-            button.addEventListener('click', (e) => {
-                const text = e.currentTarget.getAttribute('data-text');
-                playChineseAudio(text);
-            });
-        });
-    }
+                keywords.querySelectorAll('.word-play').forEach(button => {
+                    button.addEventListener('click', (e) => {
+                        const text = e.currentTarget.getAttribute('data-text');
+                        playChineseAudio(text);
+                    });
+                });
+            }
+            resolve();
+        };
+        img.onerror = reject;
+        img.src = joke.imagePath;
+    });
 }
 
 async function showNextJoke() {
     console.log('Showing next joke');
+    console.log('Current number of jokes:', jokes.length);
     if (jokes.length === 0) {
         console.error('No jokes available');
         jokeContent.innerHTML = '<p>抱歉，没有可用的笑话。</p>';
@@ -118,7 +136,7 @@ async function showNextJoke() {
 
         let jokeToShow = getRandomJoke();
         console.log('Joke to show:', jokeToShow);
-        displayJoke(jokeToShow);
+        await displayJoke(jokeToShow);
 
         updateProgress(100);
         jokeContent.classList.remove('fade');
@@ -127,14 +145,6 @@ async function showNextJoke() {
         jokeContent.innerHTML = '<p>抱歉，显示笑话时出现问题。</p>';
     } finally {
         setTimeout(hideProgressBar, 300);
-    }
-}
-
-function preloadNextJoke() {
-    nextJoke = getRandomJoke();
-    if (nextJoke.imagePath) {
-        const img = new Image();
-        img.src = nextJoke.imagePath;
     }
 }
 
@@ -169,15 +179,11 @@ function fallbackToBrowserTTS(text) {
 }
 
 nextJokeBtn.addEventListener('click', async () => {
+    if (isLoading) return; // 如果正在加载，直接返回
+    console.log('Next joke button clicked. Current jokes count:', jokes.length);
     showProgressBar();
     updateProgress(20);
     await fetchJokes(); // 每次点击都重新获取笑话数据
-    updateProgress(60);
-    await showNextJoke();
-    updateProgress(80);
-    preloadNextJoke();
-    updateProgress(100);
-    setTimeout(hideProgressBar, 300);
 });
 
 playButton.addEventListener('click', () => {
