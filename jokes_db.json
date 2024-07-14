@@ -116,6 +116,39 @@
           "english": "schedule"
         }
       ]
+    },
+    {
+      "id": "c333c8f5-f560-4f90-ac5d-c5b1b46594a5",
+      "imagePath": "images\\image_6.jpg",
+      "chineseText": "特朗普遇刺神照，是由美联社驻华盛顿首席摄影师Evan Vucci用索尼A9 III拍摄！制胜决定性瞬间，全域快门，120张/秒raw记录世纪之照（图2子弹飞行轨迹）",
+      "englishTranslation": "The iconic photo of Trump's assassination attempt was taken by Evan Vucci, Associated Press's chief photographer in Washington, using a Sony A9 III! Capturing the decisive moment with global shutter, 120 frames/second RAW recording of a historic shot (Image 2 shows bullet trajectory)",
+      "keywords": [
+        {
+          "chinese": "遇刺",
+          "pinyin": "yù cì",
+          "english": "assassination attempt"
+        },
+        {
+          "chinese": "摄影师",
+          "pinyin": "shè yǐng shī",
+          "english": "photographer"
+        },
+        {
+          "chinese": "瞬间",
+          "pinyin": "shùn jiān",
+          "english": "moment"
+        },
+        {
+          "chinese": "快门",
+          "pinyin": "kuài mén",
+          "english": "shutter"
+        },
+        {
+          "chinese": "轨迹",
+          "pinyin": "guǐ jì",
+          "english": "trajectory"
+        }
+      ]
     }
   ]
 }
