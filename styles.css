@@ -50,10 +50,16 @@ img {
     line-height: 1.6;
 }
 
+.chinese-container {
+    display: flex;
+    align-items: center;
+}
+
 .chinese-text {
     font-size: 1.2em;
     font-weight: bold;
     margin-bottom: 10px;
+    margin-right: 10px;
 }
 
 .english-text {
@@ -94,12 +100,6 @@ img {
     margin-left: 8px;
 }
 
-@media (max-width: 600px) {
-    .container {
-        width: 95%;
-    }
-}
-
 .play-button {
     background: none;
     border: none;
@@ -111,4 +111,10 @@ img {
 
 .play-button svg {
     fill: #4CAF50;
+}
+
+@media (max-width: 600px) {
+    .container {
+        width: 95%;
+    }
 }
