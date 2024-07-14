@@ -106,12 +106,36 @@ function initAudioContext() {
     }
 }
 
-function playChineseAudio(text) {
-    initAudioContext();
-    
+// 修改 script.js 中的 playChineseAudio 函数
+
+async function playChineseAudio(text) {
+    try {
+        const response = await fetch('/tts', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ text })
+        });
+        
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        
+        const audioBlob = await response.blob();
+        const audioUrl = URL.createObjectURL(audioBlob);
+        const audio = new Audio(audioUrl);
+        audio.play();
+    } catch (error) {
+        console.error('Error playing audio:', error);
+        // 如果AI语音失败，可以回退到浏览器API
+        fallbackToBrowserTTS(text);
+    }
+}
+
+function fallbackToBrowserTTS(text) {
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = 'zh-CN';
-    
     speechSynthesis.speak(utterance);
 }
 
