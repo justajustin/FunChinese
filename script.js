@@ -1,24 +1,6 @@
-const segmentChinese = (function(){
-    const punctuation = new Set('，。！？、；：""''（）[]【】{}《》');
-    return function(text) {
-        return text.split('').reduce((acc, char) => {
-            if (punctuation.has(char)) {
-                acc.push(char);
-            } else if (acc.length && !punctuation.has(acc[acc.length - 1])) {
-                acc[acc.length - 1] += char;
-            } else {
-                acc.push(char);
-            }
-            return acc;
-        }, []);
-    };
-})();
-
 let jokes = [];
 let currentJokeIndex = -1;
 let nextJoke = null;
-let currentJoke;
-let isPlaying = false;
 
 const jokeImage = document.getElementById('jokeImage');
 const chineseText = document.getElementById('chineseText');
@@ -36,47 +18,18 @@ function initAudioContext() {
     }
 }
 
-function highlightWord(index) {
-    document.querySelectorAll('.highlight').forEach(el => el.classList.remove('highlight'));
-    document.querySelector(`.chinese-word[data-index="${index}"]`)?.classList.add('highlight');
-    document.querySelector(`.english-word[data-index="${index}"]`)?.classList.add('highlight');
-}
-
-function playChineseAudioWithHighlight(text) {
-    if (isPlaying) return;
-    isPlaying = true;
+function playChineseAudio(text) {
     initAudioContext();
     
-    const words = segmentChinese(text);
-    let currentIndex = 0;
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'zh-CN';
     
-    function speakNextWord() {
-        if (currentIndex >= words.length) {
-            isPlaying = false;
-            return;
-        }
-        
-        const word = words[currentIndex];
-        highlightWord(currentIndex);
-        
-        const utterance = new SpeechSynthesisUtterance(word);
-        utterance.lang = 'zh-CN';
-        
-        utterance.onend = () => {
-            currentIndex++;
-            setTimeout(speakNextWord, 100);
-        };
-        
-        speechSynthesis.speak(utterance);
-    }
-    
-    speakNextWord();
+    speechSynthesis.speak(utterance);
 }
 
 playButton.addEventListener('click', () => {
-    if (currentJoke) {
-        playChineseAudioWithHighlight(currentJoke.chineseText);
-    }
+    const chineseText = document.getElementById('chineseText').textContent;
+    playChineseAudio(chineseText);
 });
 
 async function fetchJokes() {
@@ -103,25 +56,14 @@ function getRandomJoke() {
 }
 
 function displayJoke(joke) {
-    currentJoke = joke;
     console.log('Displaying joke:', joke);
     if (jokeImage) jokeImage.src = joke.imagePath;
     if (jokeImage) jokeImage.alt = "中文笑话图片";
-    
-    if (chineseText && englishText) {
-        const chineseWords = segmentChinese(joke.chineseText);
-        const englishWords = joke.englishTranslation.split(/\s+/);
-        
-        chineseText.innerHTML = chineseWords.map((word, index) => 
-            `<span class="word chinese-word" data-index="${index}">${word}</span>`
-        ).join('');
-        
-        englishText.innerHTML = englishWords.map((word, index) => 
-            `<span class="word english-word" data-index="${index}">${word}</span>`
-        ).join(' ');
-        
+    if (chineseText) {
+        chineseText.textContent = joke.chineseText;
         playButton.style.display = 'inline-block';
     }
+    if (englishText) englishText.textContent = joke.englishTranslation;
     
     if (keywords) {
         keywords.innerHTML = joke.keywords.map(word => 
@@ -136,10 +78,11 @@ function displayJoke(joke) {
             </p>`
         ).join('');
 
+        // Add play functionality for each keyword
         keywords.querySelectorAll('.word-play').forEach(button => {
             button.addEventListener('click', (e) => {
                 const text = e.currentTarget.getAttribute('data-text');
-                playChineseAudioWithHighlight(text);
+                playChineseAudio(text);
             });
         });
     }
@@ -182,8 +125,10 @@ nextJokeBtn.addEventListener('click', async () => {
     preloadNextJoke();
 });
 
+// Fetch jokes when the page loads
 fetchJokes();
 
+// Service Worker for offline functionality
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
         navigator.serviceWorker.register('/sw.js').then(registration => {

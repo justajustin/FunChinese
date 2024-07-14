@@ -3,7 +3,6 @@
     --background-color: #f0f0f0;
     --card-background: white;
     --text-color: #333;
-    --highlight-color: #FFFF00;
 }
 
 body {
@@ -112,11 +111,6 @@ img {
 
 .play-button svg {
     fill: #4CAF50;
-}
-
-.highlight {
-    background-color: var(--highlight-color);
-    transition: background-color 0.3s ease;
 }
 
 @media (max-width: 600px) {
