@@ -1,0 +1,37 @@
+{
+  "jokes": [
+    {
+      "id": "63676a7f-9ce7-40ff-a6d4-6e3305ca3986",
+      "imagePath": "images\\image_1.jpg",
+      "chineseText": "我员工工作12个小时，但法律规定8个小时，我可以没收他们的非法所得吗？",
+      "englishTranslation": "My employees work 12 hours, but the law stipulates 8 hours. Can I confiscate their illegal earnings?",
+      "keywords": [
+        {
+          "chinese": "员工",
+          "pinyin": "yuán gōng",
+          "english": "employee"
+        },
+        {
+          "chinese": "工作",
+          "pinyin": "gōng zuò",
+          "english": "work"
+        },
+        {
+          "chinese": "法律规定",
+          "pinyin": "fǎ lǜ guī dìng",
+          "english": "legal stipulation/law stipulates"
+        },
+        {
+          "chinese": "没收",
+          "pinyin": "mò shōu",
+          "english": "confiscate"
+        },
+        {
+          "chinese": "非法所得",
+          "pinyin": "fēi fǎ suǒ dé",
+          "english": "illegal earnings"
+        }
+      ]
+    }
+  ]
+}
