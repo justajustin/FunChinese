@@ -182,6 +182,125 @@
           "english": "schedule"
         }
       ]
+    },
+    {
+      "id": "4fa63b0a-14cd-43cf-af71-be326ced5ec6",
+      "imagePath": "images\\image_3.jpg",
+      "chineseText": "日服：自制水管枪，两枪干脆带走安倍<br>美服：Ar-15装备精良，八枪没能带走川普被当场击毙",
+      "englishTranslation": "JP: Homemade pipe gun, two shots easily took Abe down.\nUS: Well-equipped with an AR-15, eight shots couldn't take down Trump and was shot dead on the spot.",
+      "keywords": [
+        {
+          "chinese": "日服",
+          "pinyin": "rì fú",
+          "english": "Japan"
+        },
+        {
+          "chinese": "自制水管枪",
+          "pinyin": "zì zhì shuǐ guǎn qiāng",
+          "english": "homemade pipe gun"
+        },
+        {
+          "chinese": "美服",
+          "pinyin": "měi fú",
+          "english": "US"
+        },
+        {
+          "chinese": "装备精良",
+          "pinyin": "zhuāng bèi jīng liáng",
+          "english": "well-equipped"
+        },
+        {
+          "chinese": "当场击毙",
+          "pinyin": "dāng chǎng jī bì",
+          "english": "shot dead on the spot"
+        }
+      ]
+    },
+    {
+      "id": "370adf95-fed8-4b60-ab94-7516130fa278",
+      "imagePath": "images\\image_8.jpg",
+      "chineseText": "20岁激情暴打三国杀策划：三国杀玩家笑死我了",
+      "englishTranslation": "20-year-old enthusiastically beats up the Three Kingdoms Kill planner: Three Kingdoms Kill players are laughing to death",
+      "keywords": [
+        {
+          "chinese": "20岁",
+          "pinyin": "èr shí suì",
+          "english": "20-year-old"
+        },
+        {
+          "chinese": "激情",
+          "pinyin": "jī qíng",
+          "english": "enthusiastically"
+        },
+        {
+          "chinese": "暴打",
+          "pinyin": "bào dǎ",
+          "english": "beats up"
+        },
+        {
+          "chinese": "三国杀",
+          "pinyin": "sān guó shā",
+          "english": "Three Kingdoms Kill (a game)"
+        },
+        {
+          "chinese": "策划",
+          "pinyin": "cè huà",
+          "english": "planner"
+        },
+        {
+          "chinese": "玩家",
+          "pinyin": "wán jiā",
+          "english": "players"
+        },
+        {
+          "chinese": "笑死",
+          "pinyin": "xiào sǐ",
+          "english": "laughing to death"
+        }
+      ]
+    },
+    {
+      "id": "5478838f-4fd9-4798-82ce-ba51e0697362",
+      "imagePath": "images\\image_9.jpg",
+      "chineseText": "如果忽然多出来一条龙，会对这个世界有什么影响？<br>别人我不知道……<br>我们云南人会规规矩矩地把冰箱里的炒杂菌倒掉，然后顺着熟悉的路去看医生。",
+      "englishTranslation": "What impact would it have on the world if a dragon suddenly appeared?<br>I don't know about others...<br>We Yunnan people would properly dump the stir-fried mushrooms in the fridge and then head to the doctor along the familiar path.",
+      "keywords": [
+        {
+          "chinese": "龙",
+          "pinyin": "lóng",
+          "english": "dragon"
+        },
+        {
+          "chinese": "影响",
+          "pinyin": "yǐng xiǎng",
+          "english": "impact"
+        },
+        {
+          "chinese": "世界",
+          "pinyin": "shì jiè",
+          "english": "world"
+        },
+        {
+          "chinese": "云南",
+          "pinyin": "yún nán",
+          "english": "Yunnan"
+        },
+        {
+          "chinese": "规规矩矩",
+          "pinyin": "guī guī jǔ jǔ",
+          "english": "properly"
+        },
+        {
+          "chinese": "炒杂菌",
+          "pinyin": "chǎo zá jūn",
+          "english": "stir-fried mushrooms"
+        },
+        {
+          "chinese": "医生",
+          "pinyin": "yī shēng",
+          "english": "doctor"
+        }
+      ]
     }
   ]
 }
